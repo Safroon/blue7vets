@@ -1,43 +1,63 @@
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const Owner = require('../models/Owner');
 
 exports.register = async (req, res) => {
-  const { name, email, password } = req.body;
-
   try {
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ message: 'User already exists' });
+    const { phone, password, fullName, address, pets } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user = new User({ name, email, password: hashedPassword });
-    await user.save();
+    // Check if phone already exists
+    const existingUser = await User.findOne({ phone });
+    if (existingUser)
+      return res.status(400).json({ message: 'User already exists' });
 
-    res.status(201).json({ message: 'Registered successfully' });
+    // Step 1: Create user
+    const user = await User.create({ phone, password, role: 'owner' });
+
+    // Step 2: Attach petId to each pet
+    const updatedPets = pets.map((pet, index) => ({
+      ...pet,
+      petId: `${fullName.substring(0, 3).toUpperCase()}${phone.slice(-3)}${
+        index + 1
+      }`,
+    }));
+
+    // Step 3: Create owner linked to user
+    const owner = await Owner.create({
+      userId: user._id,
+      fullName,
+      address,
+      pets: updatedPets,
+    });
+
+    // Dynamically format ownerId from fullName and user._id
+    const dynamicOwnerId =
+      fullName.substring(0, 3).toUpperCase() +
+      user._id.toString().slice(-3).toUpperCase();
+
+    res.status(201).json({
+      message: 'Owner registered successfully',
+      ownerId: dynamicOwnerId,
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Server Error' });
+    console.error(err);
+    res.status(500).json({ message: 'Registration failed' });
   }
 };
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    const { phone, password } = req.body;
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: 'Invalid credentials' });
+    const user = await User.findOne({ phone });
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '7d',
-    });
-    res.json({
-      token,
-      user: { id: user._id, name: user.name, email: user.email },
-    });
+    res
+      .status(200)
+      .json({ message: 'Login successful', userId: user._id, role: user.role });
   } catch (err) {
-    res.status(500).json({ message: 'Server Error' });
+    console.error(err);
+    res.status(500).json({ message: 'Login failed' });
   }
 };
