@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import styles from '../styles/loginStyles';
+import { useSelector } from 'react-redux';
 
 const Login = ({ navigation }) => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-
+  const auth = useSelector(state => state.auth);
+  console.log('🧠 Auth State from Redux:', auth);
   const handleLogin = async () => {
     if (!phone || !password) {
       Alert.alert('Error', 'Please fill in all fields');
