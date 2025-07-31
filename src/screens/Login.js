@@ -1,41 +1,24 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import styles from '../styles/loginStyles';
-import { useSelector } from 'react-redux';
+import { login } from '../store/actions/authActions';
 
 const Login = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const { loading, error, user } = useSelector(state => state.auth);
   const auth = useSelector(state => state.auth);
   console.log('🧠 Auth State from Redux:', auth);
-  const handleLogin = async () => {
+
+  const handleLogin = () => {
     if (!phone || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    try {
-      const response = await fetch(
-        'http://<YOUR_LOCAL_IP>:5000/api/auth/login',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone, password }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        Alert.alert('Success', 'Login Successful');
-        navigation.navigate('Home'); // Placeholder, make sure `Home` exists in navigation
-      } else {
-        Alert.alert('Login Failed', data.message || 'Invalid credentials');
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Something went wrong');
-    }
+    dispatch(login({ phone, password }));
   };
 
   return (
@@ -61,8 +44,12 @@ const Login = ({ navigation }) => {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText}>
+          {loading ? 'Logging in...' : 'Login'}
+        </Text>
       </TouchableOpacity>
+
+      {error && <Text style={{ color: 'red' }}>{error}</Text>}
 
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.linkText}>Don’t have an account? Register</Text>
