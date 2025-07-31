@@ -33,13 +33,18 @@
 
 import React from 'react';
 import { Provider } from 'react-redux';
-import store from './src/redux/store';
-import Login from './src/components/Login';
+import store from './src/store/store';
+import Login from './src/screens/Login';
 
-const App = () => (
-  <Provider store={store}>
-    <Login />
-  </Provider>
-);
+const App = () => {
+  return (
+    <>
+      <Provider store={store}>
+        <Login />
+      </Provider>
+      ;
+    </>
+  );
+};
 
 export default App;
