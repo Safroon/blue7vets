@@ -35,14 +35,15 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import store from './src/store/store';
 import Login from './src/screens/Login';
+import './src/api/setupAxios';
+import AppNavigator from './navigation/AppNavigator';
 
 const App = () => {
   return (
     <>
       <Provider store={store}>
-        <Login />
+        <AppNavigator />
       </Provider>
-      ;
     </>
   );
 };

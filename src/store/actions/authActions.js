@@ -1,15 +1,12 @@
-import axios from 'axios';
 import { loginStart, loginSuccess, loginFailure } from '../slices/authSlice';
+import { loginUser } from '../../api/authAPI';
 
-export const loginUser = (phone, password) => async dispatch => {
+export const login = credentials => async dispatch => {
   dispatch(loginStart());
   try {
-    const res = await axios.post('http://localhost:5000/api/auth/login', {
-      phone,
-      password,
-    });
-    dispatch(loginSuccess(res.data));
+    const data = await loginUser(credentials);
+    dispatch(loginSuccess(data));
   } catch (error) {
-    dispatch(loginFailure(error.response?.data?.message || 'Login failed'));
+    dispatch(loginFailure(error.message || 'Login failed'));
   }
 };

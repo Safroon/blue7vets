@@ -39,8 +39,8 @@ exports.register = async (req, res) => {
       ownerId: dynamicOwnerId,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Registration failed' });
+    console.error('Register api fail', err);
+    res.status(500).json({ message: 'Registration failed from auth controll' });
   }
 };
 
@@ -53,9 +53,11 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    res
-      .status(200)
-      .json({ message: 'Login successful', userId: user._id, role: user.role });
+    res.status(200).json({
+      message: 'Login successful',
+      userId: user._id,
+      role: user.role,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Login failed' });
