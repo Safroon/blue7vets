@@ -14,7 +14,16 @@
     "@react-navigation/native": "^7.1.16",
     "@react-navigation/native-stack": "^7.3.23",
     "@reduxjs/toolkit": "^2.8.2",
+<<<<<<< HEAD
     "nativewind": "^4.1.23",
+=======
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.17.0",
+>>>>>>> f1a9be1963cbb89a851ea441156b8f35a1a5d9c1
     "react": "19.1.0",
     "react-is": "^19.1.1",
     "react-native": "0.80.2",

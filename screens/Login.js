@@ -37,6 +37,14 @@ const Login = ({ navigation }) => {
         secureTextEntry
         placeholderTextColor="#9CA3AF"
       />
+      <TextInput
+        placeholder="Password"
+        style={styles.input}
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        placeholderTextColor="#9CA3AF"
+      />
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
