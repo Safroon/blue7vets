@@ -3,16 +3,37 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import styles from '../styles/loginStyles';
 
 const Login = ({ navigation }) => {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    if (!email || !password) {
+  const handleLogin = async () => {
+    if (!phone || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    Alert.alert('Success', `Logged in as ${email}`);
+    try {
+      const response = await fetch(
+        'http://<YOUR_LOCAL_IP>:5000/api/auth/login',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, password }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Login Successful');
+        navigation.navigate('Home'); // Placeholder, make sure `Home` exists in navigation
+      } else {
+        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong');
+    }
   };
 
   return (
@@ -20,23 +41,14 @@ const Login = ({ navigation }) => {
       <Text style={styles.title}>BlueSeven Vets 🐾</Text>
 
       <TextInput
-        placeholder="Email"
+        placeholder="Phone Number"
         style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
+        value={phone}
+        onChangeText={setPhone}
+        keyboardType="phone-pad"
         placeholderTextColor="#9CA3AF"
       />
 
-      <TextInput
-        placeholder="Password"
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        placeholderTextColor="#9CA3AF"
-      />
       <TextInput
         placeholder="Password"
         style={styles.input}
@@ -50,7 +62,7 @@ const Login = ({ navigation }) => {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.linkText}>Don’t have an account? Register</Text>
       </TouchableOpacity>
     </View>
