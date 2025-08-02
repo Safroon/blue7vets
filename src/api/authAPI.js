@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://192.168.1.104:5000/api/auth';
+const BASE_URL = 'https://blue7vets-backend.onrender.com/api/auth';
 
 export const loginUser = async credentials => {
   try {
