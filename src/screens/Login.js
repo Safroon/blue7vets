@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import styles from '../styles/loginStyles';
@@ -11,6 +11,12 @@ const Login = ({ navigation }) => {
   const { loading, error, user } = useSelector(state => state.auth);
   const auth = useSelector(state => state.auth);
   console.log('🧠 Auth State from Redux:', auth);
+
+  useEffect(() => {
+    if (user) {
+      navigation.navigate('Home'); // ✅ Redirect after successful login
+    }
+  }, [user]);
 
   const handleLogin = () => {
     if (!phone || !password) {
