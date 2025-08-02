@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://192.168.1.104:5000/api',
+  baseURL: 'https://blue7vets-backend.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },

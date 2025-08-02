@@ -1,7 +1,7 @@
 // src/api/setupAxios.js
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://192.168.1.104:5000/api'; // 👈 replace with actual IP if needed
+axios.defaults.baseURL = 'https://blue7vets-backend.onrender.com/api';
 
 // Interceptor for logging
 axios.interceptors.request.use(config => {

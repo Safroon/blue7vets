@@ -45,7 +45,7 @@ const PetDetailsRegister = ({ route, navigation }) => {
 
     try {
       const res = await axios.post(
-        'http://192.168.1.104:5000/api/auth/register',
+        'https://blue7vets-backend.onrender.com/api/auth/register',
         payload,
       );
       Alert.alert('Success', `Registered with Owner ID: ${res.data.ownerId}`);
