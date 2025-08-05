@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
   ScrollView,
   FlatList,
   TouchableOpacity,
+  Alert,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
-import { Text, TextInput, Card, Button, IconButton } from 'react-native-paper';
+import { Text, TextInput, Card } from 'react-native-paper';
+import Geolocation from 'react-native-geolocation-service';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const GOOGLE_MAPS_API_KEY = 'AIzaSyC_1L9O8cUB-6aBhMUcKuYO6lXmQDKTp-4'; // ← Replace with your Google Maps API key
 
 const petServices = [
   { id: '1', title: 'Vaccination', icon: 'needle' },
@@ -27,7 +33,74 @@ const clinicSpecialties = [
 
 const HomeScreen = () => {
   const [searchText, setSearchText] = useState('');
-  const userLocation = 'Borivali West, Mumbai'; // Static for now, replace with geolocation backend
+  const [locationName, setLocationName] = useState('Fetching location...');
+
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'ios') {
+      return true;
+    }
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'This app needs access to your location',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+  const getLocationName = async (latitude, longitude) => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`,
+      );
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        setLocationName(data.results[0].formatted_address);
+      } else {
+        setLocationName('Location not found');
+      }
+    } catch (error) {
+      setLocationName('Unable to fetch location');
+      console.warn(error);
+    }
+  };
+
+  const getLocation = async () => {
+    const hasPermission = await requestLocationPermission();
+    if (!hasPermission) {
+      setLocationName('Permission denied');
+      Alert.alert(
+        'Permission needed',
+        'Location permission is required for location detection',
+      );
+      return;
+    }
+    Geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        getLocationName(latitude, longitude);
+      },
+      error => {
+        console.log(error.code, error.message);
+        setLocationName('Location unavailable');
+        Alert.alert('Error', 'Could not get location: ' + error.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+    );
+  };
+
+  useEffect(() => {
+    getLocation();
+  }, []);
 
   const renderPetServiceCard = ({ item }) => (
     <TouchableOpacity style={styles.serviceCard}>
@@ -57,7 +130,7 @@ const HomeScreen = () => {
         </Text>
         <View style={styles.locationRow}>
           <Icon name="map-marker" size={20} color="#254080" />
-          <Text style={styles.locationText}>{userLocation}</Text>
+          <Text style={styles.locationText}>{locationName}</Text>
         </View>
       </View>
 
