@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { TextInput, TouchableOpacity, Alert } from 'react-native';
 import styles from '../styles/loginStyles';
 import { login } from '../store/actions/authActions';
+import { View, StyleSheet } from 'react-native';
+import { Text, Button } from 'react-native-paper';
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -60,6 +62,13 @@ const Login = ({ navigation }) => {
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.linkText}>Don’t have an account? Register</Text>
       </TouchableOpacity>
+      <Button
+        mode="text"
+        onPress={() => navigation.navigate('Register')}
+        labelStyle={styles.linkText}
+      >
+        Don’t have an account? Register
+      </Button>
     </View>
   );
 };

@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Text, TextInput, Button, IconButton } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const PetOwnerRegister = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
@@ -16,11 +11,10 @@ const PetOwnerRegister = ({ navigation }) => {
 
   const handleNext = () => {
     if (!fullName || !address || !phone || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      // Use Snackbar for errors in the future
+      alert('Please fill in all fields');
       return;
     }
-
-    // Navigate to PetDetails screen and pass owner info
     navigation.navigate('PetDetails', {
       ownerData: { fullName, address, phone, password },
     });
@@ -28,71 +22,79 @@ const PetOwnerRegister = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Pet Owner Registration</Text>
-
+      <Icon name="dog" size={48} color="#254080" style={styles.logoIcon} />
+      <Text variant="headlineMedium" style={styles.title}>
+        Pet Owner Registration
+      </Text>
       <TextInput
-        placeholderTextColor="#9CA3AF"
-        placeholder="Full Name"
-        style={styles.input}
+        label="Full Name"
+        mode="outlined"
         value={fullName}
         onChangeText={setFullName}
-      />
-
-      <TextInput
-        placeholderTextColor="#9CA3AF"
-        placeholder="Address"
         style={styles.input}
+        left={<TextInput.Icon name="account" />}
+      />
+      <TextInput
+        label="Address"
+        mode="outlined"
         value={address}
         onChangeText={setAddress}
-      />
-
-      <TextInput
-        placeholderTextColor="#9CA3AF"
-        placeholder="Phone Number"
         style={styles.input}
+        left={<TextInput.Icon name="home" />}
+      />
+      <TextInput
+        label="Phone Number"
+        mode="outlined"
         value={phone}
         onChangeText={setPhone}
-        keyboardType="phone-pad"
-      />
-
-      <TextInput
-        placeholderTextColor="#9CA3AF"
-        placeholder="Password"
         style={styles.input}
+        keyboardType="phone-pad"
+        left={<TextInput.Icon name="phone" />}
+      />
+      <TextInput
+        label="Password"
+        mode="outlined"
         value={password}
         onChangeText={setPassword}
+        style={styles.input}
         secureTextEntry
+        left={<TextInput.Icon name="lock" />}
       />
-
-      <TouchableOpacity style={styles.button} onPress={handleNext}>
-        <Text style={styles.buttonText}>Next: Add Pets</Text>
-      </TouchableOpacity>
+      <Button mode="contained" onPress={handleNext} style={styles.button}>
+        Next: Add Pets
+      </Button>
     </View>
   );
 };
 
-export default PetOwnerRegister;
-
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, justifyContent: 'center' },
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+    backgroundColor: '#f5f7fa',
+  },
+  logoIcon: {
+    alignSelf: 'center',
+    marginBottom: 10,
+  },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#254080',
+    letterSpacing: 1,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 12,
-    marginBottom: 12,
+    marginBottom: 15,
+    backgroundColor: '#fff',
   },
   button: {
-    backgroundColor: '#2563eb',
-    padding: 15,
-    borderRadius: 6,
-    alignItems: 'center',
+    marginTop: 20,
+    paddingVertical: 6,
+    borderRadius: 14,
+    backgroundColor: '#254080',
   },
-  buttonText: { color: '#fff', fontWeight: 'bold' },
 });
+
+export default PetOwnerRegister;
