@@ -31,7 +31,7 @@ const clinicSpecialties = [
   { id: '5', title: 'Diagnostic Lab', icon: 'flask' },
 ];
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   const [locationName, setLocationName] = useState('Fetching location...');
 
@@ -103,7 +103,12 @@ const HomeScreen = () => {
   }, []);
 
   const renderPetServiceCard = ({ item }) => (
-    <TouchableOpacity style={styles.serviceCard}>
+    <TouchableOpacity
+      style={styles.serviceCard}
+      onPress={() =>
+        navigation.navigate('Book Appointment', { service: item.title })
+      }
+    >
       <Icon name={item.icon} size={32} color="#254080" />
       <Text style={styles.serviceTitle}>{item.title}</Text>
     </TouchableOpacity>
