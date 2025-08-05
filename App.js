@@ -37,12 +37,14 @@ import store from './src/store/store';
 import Login from './src/screens/Login';
 import './src/api/setupAxios';
 import AppNavigator from './navigation/AppNavigator';
-
+import { Provider as PaperProvider } from 'react-native-paper';
 const App = () => {
   return (
     <>
       <Provider store={store}>
-        <AppNavigator />
+        <PaperProvider>
+          <AppNavigator />
+        </PaperProvider>
       </Provider>
     </>
   );
